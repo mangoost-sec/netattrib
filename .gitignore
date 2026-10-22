@@ -25,3 +25,6 @@ Desktop.ini
 
 # Local Claude Code settings
 .claude/settings.local.json
+
+# Release packages built by scripts/package-release.ps1
+/dist/

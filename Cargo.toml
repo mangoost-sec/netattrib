@@ -1,6 +1,6 @@
 [package]
 name = "netattrib"
-version = "0.1.0"
+version = "1.0.0"
 edition = "2021"
 # eframe/egui 0.37 (the GUI) require Rust 1.95.
 rust-version = "1.95"

@@ -1,5 +1,7 @@
 # netattrib — per-executable network attribution for Windows
 
+[English](README.md) | [Русский](README_RU.md)
+
 Answer *"which binary talked to whom, when, as which user, and how much"* on Windows 10/11 and
 Windows Server (x64), including sockets that live for a few milliseconds.
 
@@ -518,7 +520,18 @@ and `dns_queries[]` (`name`, `count`).
 
 ## 6. Build & run
 
-**Prerequisites**
+**Download a release.** Get `netattrib-v<version>-windows-x64.zip` from
+[Releases](https://github.com/mangoost-sec/netattrib/releases) and check it against the published
+SHA-256 before running it:
+
+```powershell
+(Get-FileHash .\netattrib-v1.0.0-windows-x64.zip -Algorithm SHA256).Hash
+Get-Content .\netattrib-v1.0.0-windows-x64.zip.sha256
+```
+
+The two hashes must match (letter case does not matter).
+
+**Prerequisites** (building from source)
 * Rust ≥ 1.95 with the MSVC toolchain: `rustup default stable-x86_64-pc-windows-msvc`. (1.95 is
   required by egui/eframe 0.37, which the GUI uses.)
 * Visual Studio Build Tools (the "Desktop development with C++" workload, which includes the Windows SDK)
@@ -527,7 +540,13 @@ and `dns_queries[]` (`name`, `count`).
 ```powershell
 cargo build --release          # -> target\release\netattrib.exe (static CRT, no runtime deps)
 cargo test                     # 80 unit tests (parsers, PID reuse, poll/ETW races, state machine, layout, encoders, GUI, signatures)
+powershell -ExecutionPolicy Bypass -File scripts\package-release.ps1   # release zip + SHA-256 in dist\
 ```
+
+`scripts/package-release.ps1` builds the release, then writes
+`dist\netattrib-v<version>-windows-x64.zip` (the exe, both READMEs and `LICENSE`) and its `.sha256`
+file. The version comes from `Cargo.toml`, and the script refuses to package an exe that reports a
+different one.
 
 Release profile: `opt-level = 3`, fat LTO, one codegen unit, stripped, `panic = "abort"`. Measured
 on this project: thin LTO gave a **6 % larger** exe and only builds faster, so fat LTO stays. Abort
@@ -597,3 +616,9 @@ result is written to `selftest-result.txt`.
   the console outputs carry no signature fields.
 * **Close Connection** works for IPv4 TCP only (Windows offers no API for IPv6 or UDP), and an
   application may reconnect at once.
+
+---
+
+## License
+
+MIT — see [LICENSE](LICENSE). © 2026 MANGOOST.
