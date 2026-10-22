@@ -1,0 +1,26 @@
+# Release hardening for the MSVC targets (applies to every build, tests included):
+#
+# * +crt-static: the binary has no VC++ redistributable dependency.
+# * /DEPENDENTLOADFLAG:0x800 (LOAD_LIBRARY_SEARCH_SYSTEM32): the loader resolves the DLLs the
+#   exe imports (tdh, iphlpapi, dwmapi, uxtheme, opengl32, bcrypt, wintrust, ...) from System32
+#   only. Without it, a DLL planted next to netattrib.exe (e.g. in Downloads) is loaded first
+#   and runs with the elevated process's rights. Same flag as System Informer's release build.
+#   `main()` additionally calls SetDefaultDllDirectories for libraries loaded at run time.
+# * control-flow-guard: CFG checks on indirect calls in netattrib and its dependencies (the
+#   prebuilt standard library is not instrumented without nightly -Zbuild-std).
+# * /CETCOMPAT: opts into CET hardware shadow stacks (return-address protection) on CPUs that
+#   support them. x86/x64 only.
+[target.x86_64-pc-windows-msvc]
+rustflags = [
+    "-C", "target-feature=+crt-static",
+    "-C", "link-arg=/DEPENDENTLOADFLAG:0x800",
+    "-C", "control-flow-guard=checks",
+    "-C", "link-arg=/CETCOMPAT",
+]
+
+[target.aarch64-pc-windows-msvc]
+rustflags = [
+    "-C", "target-feature=+crt-static",
+    "-C", "link-arg=/DEPENDENTLOADFLAG:0x800",
+    "-C", "control-flow-guard=checks",
+]

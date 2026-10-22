@@ -1,0 +1,27 @@
+# Build output
+/target/
+
+# Written by scripts/etw-selftest.ps1 on every run
+/selftest-result.txt
+
+# Files netattrib writes that hold machine-specific or captured data, should a locally run
+# copy put them here: portable-mode settings, GUI exports, --log / --summary output
+netattrib.settings.ron
+/netattrib-*.csv
+/netattrib-*.json
+*.jsonl
+
+# Debug symbols copied out of target/
+*.pdb
+
+# Editor and OS files
+.vscode/
+.idea/
+*.swp
+*~
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local Claude Code settings
+.claude/settings.local.json
